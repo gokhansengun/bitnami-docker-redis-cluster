@@ -1,0 +1,17 @@
+---
+replicaCount: 1
+
+image:
+  repository: docker.io/bitnami/redis-cluster
+  tag: "6.2"
+
+service:
+  annotations:
+    family: redis-cluster-node # TODO: gseng - enhance this
+
+busNodePort: #
+dataNodePort: #
+
+env: {}
+
+clusterCreator: no

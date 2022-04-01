@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "redis-cluster-node.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "redis-cluster-node.name" . }}
+    helm.sh/chart: {{ include "redis-cluster-node.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  serviceName: "nginx"
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "redis-cluster-node.name" . }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "redis-cluster-node.name" . }}
+    spec:
+      containers:
+        - name: redis
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.dataNodePort }}
+              name: data
+            - containerPort: {{ .Values.busNodePort }}
+              name: bus
+          env:
+            - name: FRP_MODE
+              value: redis-cluster
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes"
+            - name: REDIS_CLUSTER_DYNAMIC_IPS
+              value: "no"
+            - name: REDIS_NODES
+              value: "192.168.59.121:30000 192.168.59.121:30001 192.168.59.121:30002 192.168.59.121:30003 192.168.59.121:30004 192.168.59.121:30005"
+            # - name: REDIS_NODES
+            #   value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
+            # - name: REDIS_NODES
+            #   value: "redis-node-0:30000 redis-node-1:30001 redis-node-2:30002 redis-node-3:30003 redis-node-4:30004 redis-node-5:30005"
+
+          {{- if .Values.clusterCreator }}
+            - name: REDIS_CLUSTER_REPLICAS
+              value: "1"
+            - name: REDIS_CLUSTER_CREATOR
+              value: "yes"
+          {{- end }}
+          {{- if .Values.env }}
+          {{- range $key, $value := .Values.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          {{- end }}
+  #       volumeMounts:
+  #       - name: www
+  #         mountPath: /usr/share/nginx/html
+  # volumeClaimTemplates:
+  # - metadata:
+  #     name: www
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     resources:
+  #       requests:
+  #         storage: 1Gi
+  #     storageClassName: thin-disk
