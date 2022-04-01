@@ -11,6 +11,7 @@ service:
 
 busNodePort: #
 dataNodePort: #
+announceIP: 192.168.59.121
 
 env: {}
 

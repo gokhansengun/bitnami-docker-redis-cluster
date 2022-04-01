@@ -27,12 +27,12 @@ spec:
             - containerPort: {{ .Values.busNodePort }}
               name: bus
           env:
-            - name: FRP_MODE
-              value: redis-cluster
             - name: ALLOW_EMPTY_PASSWORD
               value: "yes"
             - name: REDIS_CLUSTER_DYNAMIC_IPS
               value: "no"
+            - name: REDIS_CLUSTER_ANNOUNCE_IP
+              value: "{{ .Values.announceIP }}"
             - name: REDIS_NODES
               value: "192.168.59.121:30000 192.168.59.121:30001 192.168.59.121:30002 192.168.59.121:30003 192.168.59.121:30004 192.168.59.121:30005"
             # - name: REDIS_NODES
@@ -52,6 +52,13 @@ spec:
               value: "{{ $value }}"
           {{- end }}
           {{- end }}
+          volumeMounts:
+            - name: redis-config
+              mountPath: /opt/bitnami/redis/mounted-etc
+      volumes:
+        - name: redis-config
+          configMap:
+            name: {{ include "redis-cluster-node.name" . }}
   #       volumeMounts:
   #       - name: www
   #         mountPath: /usr/share/nginx/html
