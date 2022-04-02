@@ -10,12 +10,12 @@ spec:
   type: NodePort
   ports:
     - name: data
-      port: {{ .Values.dataNodePort }}
+      port: 6379
       protocol: TCP
       targetPort: {{ .Values.dataNodePort }}
       nodePort: {{ .Values.dataNodePort }}
     - name: bus
-      port: {{ add .Values.dataNodePort 10000 }}
+      port: 16379
       protocol: TCP
       targetPort: {{ add .Values.dataNodePort 10000 }}
       nodePort: {{ add .Values.dataNodePort 10000 }}
