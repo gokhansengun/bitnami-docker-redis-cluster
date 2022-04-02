@@ -13,7 +13,7 @@ data:
     cluster-config-file /bitnami/redis/data/nodes.conf
     cluster-announce-ip {{ .Values.announceIP }}
     cluster-announce-port {{ .Values.dataNodePort }}
-    cluster-announce-bus-port {{ .Values.busNodePort }}
+    cluster-announce-bus-port {{ add .Values.dataNodePort 10000 }}
 
     protected-mode yes
     tcp-backlog 511

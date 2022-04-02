@@ -9,10 +9,11 @@ service:
   annotations:
     family: redis-cluster-node # TODO: gseng - enhance this
 
-busNodePort: #
 dataNodePort: #
-announceIP: 192.168.59.121
+announceIP: # 192.168.59.121
+redisNodes: # 192.168.59.121:30000 192.168.59.121:30001 192.168.59.121:30002 192.168.59.121:30003 192.168.59.121:30004 192.168.59.121:30005
+
+reservePortsOnly: true
+clusterCreator: no
 
 env: {}
-
-clusterCreator: no

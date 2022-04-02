@@ -15,9 +15,9 @@ spec:
       targetPort: {{ .Values.dataNodePort }}
       nodePort: {{ .Values.dataNodePort }}
     - name: bus
-      port: {{ .Values.busNodePort }}
+      port: {{ add .Values.dataNodePort 10000 }}
       protocol: TCP
-      targetPort: {{ .Values.busNodePort }}
-      nodePort: {{ .Values.busNodePort }}
+      targetPort: {{ add .Values.dataNodePort 10000 }}
+      nodePort: {{ add .Values.dataNodePort 10000 }}
   selector:
     app.kubernetes.io/name: {{ include "redis-cluster-node.name" . }}

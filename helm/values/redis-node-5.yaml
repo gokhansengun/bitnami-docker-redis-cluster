@@ -1,5 +1,0 @@
----
-clusterCreator: yes
-
-busNodePort: 40005
-dataNodePort: 30005

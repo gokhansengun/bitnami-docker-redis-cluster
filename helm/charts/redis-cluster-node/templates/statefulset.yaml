@@ -1,3 +1,4 @@
+{{- if not .Values.reservePortsOnly -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -24,7 +25,7 @@ spec:
           ports:
             - containerPort: {{ .Values.dataNodePort }}
               name: data
-            - containerPort: {{ .Values.busNodePort }}
+            - containerPort: {{ add .Values.dataNodePort 10000 }}
               name: bus
           env:
             - name: ALLOW_EMPTY_PASSWORD
@@ -34,13 +35,9 @@ spec:
             - name: REDIS_CLUSTER_ANNOUNCE_IP
               value: "{{ .Values.announceIP }}"
             - name: REDIS_NODES
-              value: "192.168.59.121:30000 192.168.59.121:30001 192.168.59.121:30002 192.168.59.121:30003 192.168.59.121:30004 192.168.59.121:30005"
-            # - name: REDIS_NODES
-            #   value: "redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5"
-            # - name: REDIS_NODES
-            #   value: "redis-node-0:30000 redis-node-1:30001 redis-node-2:30002 redis-node-3:30003 redis-node-4:30004 redis-node-5:30005"
+              value: "{{ .Values.redisNodes }}"
 
-          {{- if .Values.clusterCreator }}
+          {{- if eq .Release.Name "redis-node-5" }}
             - name: REDIS_CLUSTER_REPLICAS
               value: "1"
             - name: REDIS_CLUSTER_CREATOR
@@ -71,3 +68,4 @@ spec:
   #       requests:
   #         storage: 1Gi
   #     storageClassName: thin-disk
+{{- end }}
